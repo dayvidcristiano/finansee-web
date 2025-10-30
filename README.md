@@ -67,8 +67,11 @@ Aqui você vai encontrar as histórias de usuário selecionadas para esta entreg
   <img src="https://github.com/user-attachments/assets/ae0dce7d-f496-42ae-a807-44b9c9dad293" width="48%" alt="Resultado HU05">
 </p>
 
-- **Screencast do Sistema (Atualizado)**  
+- **Screencast do Sistema Front-End**  
   https://youtu.be/Wdt5StLO-GE
+
+- **Screencast do Sistema Back-End**
+  https://youtu.be/5H19bfXRujQ
 
    **00:15 – HU03: Categorias Personalizáveis** Permite criar, editar e excluir categorias de despesas personalizadas. O sistema garante o controle ao impedir nomes duplicados e exibindo    mensagens de erro. 
  
