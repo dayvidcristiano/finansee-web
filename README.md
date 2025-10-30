@@ -62,29 +62,31 @@ Aqui você vai encontrar as histórias de usuário que estão em andamento, o sc
 Aqui você vai encontrar as histórias de usuário selecionadas para esta entrega, o screencast do sistema atualizado, o issue/bug tracker, o ambiente de versionamento e os testes automatizados.
 
 - **Histórias de Usuário Selecionadas [Quadro Trello]**
-  ![Quadro Trello - Entrega 03](https://github.com/user-attachments/assets/SEU_ID_DE_IMAGEM_TRELLO)
+<p align="left">
+  <img src="https://github.com/user-attachments/assets/cc8984ce-4af6-4f0e-932c-5f298b767e46" width="48%" alt="Resultado HU03">
+  <img src="https://github.com/user-attachments/assets/ae0dce7d-f496-42ae-a807-44b9c9dad293" width="48%" alt="Resultado HU05">
+</p>
 
 - **Screencast do Sistema (Atualizado)**  
-  https://youtu.be/COLOQUE_SEU_LINK
+  https://youtu.be/Wdt5StLO-GE
 
-  **00:15 – HU03: Categorias Personalizáveis**  
-  O usuário pode criar, editar e excluir categorias de despesas personalizadas, como “Streaming” ou “Compras online”. O sistema impede a criação de categorias com nomes duplicados, exibindo uma mensagem de erro quando isso ocorre, garantindo melhor organização e          controle dos gastos.
-
-  **01:10 – HU05: Busca e Filtros**  
-  O usuário pode buscar e filtrar despesas por categoria, data ou valor para encontrar registros específicos. O sistema permite combinações de filtros, como visualizar apenas despesas da categoria “Alimentação” dos últimos 30 dias ou acima de um determinado valor,        exibindo resultados precisos e organizados.
+   **00:15 – HU03: Categorias Personalizáveis** Permite criar, editar e excluir categorias de despesas personalizadas. O sistema garante o controle ao impedir nomes duplicados e exibindo    mensagens de erro. 
+ 
+  **01:10 – HU05: Busca e Filtros** Permite buscar e filtrar despesas por categoria, data ou valor. O sistema suporta a combinação de filtros, como despesas da categoria “Alimentação”      dos   últimos 30 dias, para exibição de resultados precisos.
   
 - **Testes Automatizados**  
-  Implementação de testes automatizados (unitários e/ou de integração). Adicionar screencast da execução dos testes (disponível no YouTube) e link no README.
+  Implementação de testes automatizados (unitários e/ou de integração).
 
   - Comando para rodar os testes: `npm test` / `pytest` / `mvn test` (ajustar conforme stack).  
   - Critério de aceite: todos os testes das histórias selecionadas devem passar no CI.
 
-  Screencast dos testes: https://youtu.be/COLOQUE_LINK_TESTS
-
-  ![Resultados dos Testes](https://github.com/user-attachments/assets/SEU_ID_DE_IMAGEM_TESTS)
+- **Screencast dos Testes**
+  https://youtu.be/DhLjTXhi8lQ
 
   - **Issue/Bug Tracker**
   <img width="921" height="178" alt="image" src="https://github.com/user-attachments/assets/e193a215-a50e-43c2-a202-47905c8c8b31" />
+  <img width="933" height="190" alt="image" src="https://github.com/user-attachments/assets/b830b890-dd0b-4fef-ac53-4c92a70ca9e6" />
+
 
 
 
