@@ -143,8 +143,8 @@ const Telacriacaoreceita = ({ transactionToEdit, onClose, onSaveSuccess, categor
           <label>Conta</label>
           <input 
             type="text"
-            name="account"
-            value={formData.account}
+            name="conta"
+            value={formData.conta}
             onChange={handleChange}
             placeholder="Ex: Nubank, Carteira, Banco do Brasil"
             required
