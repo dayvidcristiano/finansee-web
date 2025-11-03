@@ -14,6 +14,7 @@ import {
 import { getTransactions, getCategories } from '../services/apiService';
 import Telacriacaodesp from './Telacriacaodesp'; 
 import Telacriacaoreceita from './Telacriacaoreceita';
+import Telacategoria from './Telacategoria';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -54,7 +55,7 @@ const Teladashboard = () => {
     const despesas = transactions.filter(t => t.valor < 0);
     const total = despesas.reduce((sum, t) => sum + Math.abs(t.valor), 0);
     const agrupadas = despesas.reduce((acc, t) => {
-      const nome = t.categoria?.nome || 'Outros';
+      const nome = typeof t.categoria === 'string' ? t.categoria : t.categoria?.nome || 'Outros';
       acc[nome] = (acc[nome] || 0) + Math.abs(t.valor);
       return acc;
     }, {});
@@ -79,7 +80,7 @@ const Teladashboard = () => {
     const receitas = transactions.filter(t => t.valor > 0);
     const total = receitas.reduce((sum, t) => sum + t.valor, 0);
     const agrupadas = receitas.reduce((acc, t) => {
-      const nome = t.categoria?.nome || 'Outros';
+      const nome = typeof t.categoria === 'string' ? t.categoria : t.categoria?.nome || 'Outros';
       acc[nome] = (acc[nome] || 0) + t.valor;
       return acc;
     }, {});
@@ -181,7 +182,6 @@ const Teladashboard = () => {
           </button>
         </div>
 
-
         {modalType === 'despesa' && (
           <Telacriacaodesp
             transactionToEdit={transactionToEdit}
@@ -196,6 +196,15 @@ const Teladashboard = () => {
             onClose={handleCloseModal}
             onSaveSuccess={async () => { await fetchData(); }}
             categories={categories}
+          />
+        )}
+        {modalType === 'categoria' && (
+          <Telacategoria
+            onClose={handleCloseModal}
+            onEditCategory={() => {}}
+            onCreateNewCategory={() => {}}
+            categories={categories}
+            onDeleteCategory={() => {}}
           />
         )}
       </div>
