@@ -934,3 +934,42 @@ label {
 .filters-section button:hover {
   background-color: #0056b3;
 }
+.dashboard-vermais-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.dashboard-vermais-button {
+  background-color: #1E3A8A;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dashboard-vermais-button:hover {
+  background-color: #2c4db3;
+}
+.relatorio-toggle-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.relatorio-toggle-buttons button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.relatorio-toggle-buttons button.ativo {
+  background-color: #1E3A8A;
+  color: white;
+}
