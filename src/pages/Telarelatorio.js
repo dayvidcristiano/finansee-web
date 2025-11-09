@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import axios from 'axios'; // <-- Importação do Axios
 import Sidebar from '../components/Sidebar';
 import SummaryCards from '../components/SummaryCards';
 import MonthSelector from '../components/MonthSelector';
@@ -195,6 +196,51 @@ const TelaRelatorio = () => {
 
   const { data: reportData, total: totalDespesasMes } = chartData;
 
+  // --- FUNÇÃO DE EXPORTAÇÃO ---
+  const handleExport = async (format) => { // 'format' pode ser 'pdf' ou 'excel'
+    console.log(`Preparando para exportar para ${format.toUpperCase()}:`, { reportData, totalDespesasMes, currentMonth });
+
+    const payload = {
+      data: reportData,
+      totalDespesasMes: totalDespesasMes,
+      currentMonth: currentMonth
+    };
+
+    try {
+      const endpoint = `/api/relatorios/exportar-${format}`; // Ex: /api/relatorios/exportar-pdf
+      const mediaType = format === 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      const fileExtension = format === 'pdf' ? 'pdf' : 'xlsx';
+
+      const response = await axios.post(endpoint, payload, {
+        responseType: 'blob', // MUITO IMPORTANTE para receber o arquivo
+        headers: {
+          // 'Authorization': `Bearer ${seuTokenDeAutenticacao}` // Adicione se sua API requer token
+        }
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: mediaType }));
+      const link = document.createElement('a');
+      link.href = url;
+      
+      const nomeArquivo = `Relatorio_${currentMonth.replace(' ', '_')}.${fileExtension}`;
+      link.setAttribute('download', nomeArquivo);
+      
+      document.body.appendChild(link);
+      link.click();
+      
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      alert(`Relatório exportado com sucesso para ${format.toUpperCase()}!`); // Feedback para o usuário
+
+    } catch (error) {
+      console.error(`Erro ao exportar relatório para ${format.toUpperCase()}:`, error);
+      alert(`Erro ao exportar relatório para ${format.toUpperCase()}. Por favor, tente novamente.`);
+      // Aqui você pode adicionar uma lógica mais sofisticada para mostrar erros ao usuário
+    }
+  };
+  // ------------------------------------------
+
   if (loading) return <div className="loading-spinner">Carregando relatórios...</div>;
 
   return (
@@ -215,12 +261,35 @@ const TelaRelatorio = () => {
         />
 
         <div className="relatorio-main-card">
-          <MonthSelector
-            currentMonth={currentMonth}
-            onPrevious={() => handleMonthChange('previous')}
-            onNext={() => handleMonthChange('next')}
-            isReportContext={true}
-          />
+          
+          {/* ----- ÁREA MODIFICADA ----- */}
+          {/* Container com classes CSS para os controles do cabeçalho */}
+          <div className="relatorio-header-controls">
+            <MonthSelector
+              currentMonth={currentMonth}
+              onPrevious={() => handleMonthChange('previous')}
+              onNext={() => handleMonthChange('next')}
+              isReportContext={true}
+            />
+            
+            {/* Botões de exportação usando as classes CSS */}
+            <div className="export-buttons-group">
+              <button 
+                onClick={() => handleExport('pdf')} 
+                className="btn-exportar"
+              >
+                Exportar PDF
+              </button>
+              <button 
+                onClick={() => handleExport('excel')} 
+                className="btn-exportar"
+              >
+                Exportar Excel
+              </button>
+            </div>
+          </div>
+          {/* ----- FIM DA ÁREA MODIFICADA ----- */}
+
 
           <div className="relatorio-content-flex">
             <div className="relatorio-chart-container">
@@ -229,7 +298,7 @@ const TelaRelatorio = () => {
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="name" hide />
                   <YAxis hide />
-                                    <Tooltip
+                  <Tooltip
                     formatter={(value, name, props) => [
                       value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
                       props.payload.name

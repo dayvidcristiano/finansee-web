@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaTimes, FaArrowLeft, FaTrashAlt } from 'react-icons/fa';
+import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 
 const COLOR_OPTIONS = [
   '#FF6347', '#4682B4', '#3CB371', '#9370DB',
@@ -17,28 +17,31 @@ const Telacriacaocateg = ({
     id: null,
     name: '',
     color: COLOR_OPTIONS[0],
-    type: 'despesa'
+    type: 'despesa',
+    orcamento: '' // campo adicionado
   });
 
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (categoryToEdit && categoryToEdit.id) {
+      setIsEditing(true);
       setFormData({
         id: categoryToEdit.id,
-        nome: categoryToEdit.nome,
-        tipo: categoryToEdit.tipo.toLowerCase(),
-        cor: categoryToEdit.cor
+        name: categoryToEdit.nome || '',
+        type: categoryToEdit.tipo?.toLowerCase() || 'despesa',
+        color: categoryToEdit.cor || COLOR_OPTIONS[0],
+        orcamento: categoryToEdit.orcamento || ''
       });
-      setIsEditing(true);
     } else {
+      setIsEditing(false);
       setFormData({
-          id: null,
-          name: '',
-          color: COLOR_OPTIONS[0],
-          type: 'despesa'
-        });
-        setIsEditing(false);
+        id: null,
+        name: '',
+        color: COLOR_OPTIONS[0],
+        type: 'despesa',
+        orcamento: ''
+      });
     }
   }, [categoryToEdit]);
 
@@ -49,7 +52,21 @@ const Telacriacaocateg = ({
 
   const handleSave = (e) => {
     e.preventDefault();
-    onSaveSuccess(formData);
+
+    // prepara dados sem quebrar backend
+    const dataToSave = {
+      nome: formData.name,
+      tipo: formData.type,
+      cor: formData.color
+    };
+
+    // envia orçamento apenas se o backend já tiver suporte
+    if (formData.type === 'despesa' && formData.orcamento) {
+      // apenas mantém o dado localmente por enquanto
+      console.log("Campo de orçamento (não enviado ao backend):", formData.orcamento);
+    }
+
+    onSaveSuccess(dataToSave);
   };
 
   const isLightColor = (hex) => {
@@ -109,6 +126,32 @@ const Telacriacaocateg = ({
               Receita
             </button>
           </div>
+
+          {formData.type === 'despesa' && (
+            <>
+              <label>Orçamento (Opcional)</label>
+              <div className="input-group">
+                <span className="currency-symbol">R$</span>
+                <input
+                  type="number"
+                  name="orcamento"
+                  value={formData.orcamento}
+                  onChange={handleChange}
+                  placeholder="500,00"
+                  style={{
+                    border: 'none',
+                    padding: '12px 0',
+                    margin: 0,
+                    borderRadius: 0,
+                    fontSize: '1rem',
+                    fontWeight: 'normal'
+                  }}
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+            </>
+          )}
 
           <label>Selecione uma cor</label>
           <div className="color-palette">
