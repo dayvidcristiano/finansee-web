@@ -1,13 +1,13 @@
 import apiClient from "./apiClient";
 
 const mapFormaPagamento = (tipo) => {
- if (!tipo) return 'OUTROS'; // Garante que não quebre se for nulo
+ if (!tipo) return 'OUTROS';
 
  const map = {
   cartao: 'CARTAO_CREDITO',
   pix: 'PIX',
   boleto: 'BOLETO',
-  debito: 'CARTAO_DEBITO' // Adicionei 'debito' caso exista
+  debito: 'CARTAO_DEBITO'
  };
  return map[tipo.toLowerCase()] || 'OUTROS';
 };
@@ -15,11 +15,7 @@ const mapFormaPagamento = (tipo) => {
 
 export const getTransactions = async (filters = {}) => {
  try {
-  // O apiClient transforma { dataInicio: '...' } em "?dataInicio=..."
   const { data } = await apiClient.get('/transacoes', { params: filters });
- 
-  // O backend (TransacaoService) já fez todo o trabalho.
-  // Os dados já vêm prontos: unificados, ordenados, e com valores negativos.
   return data;
  
  } catch (error) {
@@ -34,32 +30,21 @@ export const createTransaction = async (formData) => {
 
  const {tipo, ...payload } = formData;
 
- // 3. Decide qual endpoint chamar
  let endpoint = '';
  if (tipo === 'despesa') {
   endpoint = '/despesas';
  } else if (tipo === 'receita') {
   endpoint = '/receitas';
  } else {
-  // Falha rápida se o tipo for inválido
   throw new Error("Tipo de transação inválido: " + tipo);
  }
 
  try {
-  // 4. Faz a chamada POST para o endpoint correto
   const { data } = await apiClient.post(endpoint, payload);
 
-  // 5. Retorna os dados para o frontend (React)
-  // O backend retorna o DTO (ex: DespesaDTO), mas o frontend
-  // precisa saber o 'tipo' para atualizar o estado corretamente.
-  // Então, adicionamos o 'tipo' de volta.
   return {
-   ...data, // Os dados retornados pelo backend (id, descricao, valor, etc.)
-   tipo: tipo, // Adiciona o 'tipo' para o frontend saber
-  
-   // O mock antigo retornava o valor negativo. Nosso backend real NÃO FAZ ISSO.
-   // A lógica de negativar o valor será feita pelo `GET /api/transacoes` (que já fizemos).
-   // Mas para a atualização imediata da tela, podemos fazer isso aqui também:
+   ...data, 
+   tipo: tipo,
    valor: tipo === 'despesa' ? -Math.abs(data.valor) : data.valor
   };
  
@@ -116,27 +101,26 @@ export const deleteTransaction = async (transaction) => {
  }
 };
 
-// Categorias
+// ===========================================
+// --- FUNÇÕES DE CATEGORIA ---
+// ===========================================
 
 export const getCategories = async () => {
  try {
   const { data } = await apiClient.get('/categorias');
-  return data; // Retorna a lista de CategoriaDTO
+  return data; 
  } catch (error) {
   console.error("Erro ao buscar categorias:", error.response?.data || error.message);
-  return []; // Retorna array vazio para não quebrar a UI
+  return []; 
  }
 };
 
 export const createCategory = async (categoryData) => {
-  // categoryData (do formulário) é: { name, type, color, orcamento }
  try {
-  // O DTO do backend (CategoriaDTO) espera: nome, tipo, cor
   const payload = {
-   nome: categoryData.name, // O mock usava 'name', vamos traduzir
-   tipo: categoryData.type.toUpperCase(), // O mock usava 'type', e o backend espera ENUM
-   cor: categoryData.color, // O mock usava 'color'
-      // <-- ADICIONADO
+   nome: categoryData.name, 
+   tipo: categoryData.type.toUpperCase(),
+   cor: categoryData.color, 
    orcamento: categoryData.type === 'despesa' ? (Number(categoryData.orcamento) || 0) : 0
   };
   const { data } = await apiClient.post('/categorias', payload);
@@ -185,6 +169,10 @@ export const deleteCategory = async (id) => {
  }
 };
 
+// ===========================================
+// --- FUNÇÕES DE AUTENTICAÇÃO ---
+// ===========================================
+
 export const loginUser = async (credentials) => {
  try {
   // A chamada não precisa de token, pois é para obter um
@@ -206,4 +194,33 @@ export const registerUser = async (userData) => {
   console.error("Erro no registro:", error.response?.data || error.message);
   throw new Error("Não foi possível registrar. O email pode já estar em uso.");
  }
+};
+
+// ===========================================
+// --- FUNÇÕES DE RELATÓRIO (HU06 e HU07) ---
+// ===========================================
+
+export const getGastosPorCategoria = async (ano, mes) => {
+  try {
+      const { data } = await apiClient.get('/relatorios/gastos-por-categoria', {
+        params: { ano, mes }
+      });
+      return data; 
+    } catch (error) {
+      console.error("Erro ao buscar dados do relatório:", error.response?.data || error.message);
+      throw new Error("Não foi possível carregar os dados do gráfico.");
+    }
+};
+
+export const exportarRelatorioPDF = async (ano, mes) => {
+  try {
+    const { data } = await apiClient.get('/relatorios/exportar-pdf', {
+      params: { ano, mes },
+      responseType: 'blob' 
+    });
+    return data; 
+  } catch (error) {
+    console.error("Erro ao exportar PDF:", error.response?.data || error.message);
+    throw new Error("Não foi possível gerar o relatório em PDF.");
+  }
 };
