@@ -200,16 +200,30 @@ export const registerUser = async (userData) => {
 // --- FUNÇÕES DE RELATÓRIO (HU06 e HU07) ---
 // ===========================================
 
-export const getGastosPorCategoria = async (ano, mes) => {
+
+// comentado pois 'getResumoDoMes' será utilizado no seu lugar.
+// export const getGastosPorCategoria = async (ano, mes) => {
+//   try {
+//       const { data } = await apiClient.get('/relatorios/gastos-por-categoria', {
+//         params: { ano, mes }
+//       });
+//       return data; 
+//     } catch (error) {
+//       console.error("Erro ao buscar dados do relatório:", error.response?.data || error.message);
+//       throw new Error("Não foi possível carregar os dados do gráfico.");
+//     }
+// };
+
+export const getResumoDoMes = async (ano, mes) => {
   try {
-      const { data } = await apiClient.get('/relatorios/gastos-por-categoria', {
-        params: { ano, mes }
-      });
-      return data; 
-    } catch (error) {
-      console.error("Erro ao buscar dados do relatório:", error.response?.data || error.message);
-      throw new Error("Não foi possível carregar os dados do gráfico.");
-    }
+    const { data } = await apiClient.get('/relatorios/resumo-mes', {
+      params: { ano, mes }
+    });
+    return data; // Retorna o objeto { totalReceitas, totalDespesas, saldoDoMes, gastosPorCategoria }
+  } catch (error) {
+    console.error("Erro ao buscar resumo do mês:", error.response?.data || error.message);
+    throw new Error("Não foi possível carregar os dados do relatório.");
+  }
 };
 
 export const exportarRelatorioPDF = async (ano, mes) => {

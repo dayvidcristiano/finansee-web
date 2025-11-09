@@ -13,7 +13,8 @@ import {
   getCategories,
   createCategory,
   updateCategory,
-  getGastosPorCategoria,
+  // getGastosPorCategoria,
+  getResumoDoMes,
   exportarRelatorioPDF
 } from '../services/apiService';
 
@@ -51,13 +52,18 @@ const TelaRelatorio = () => {
   const navigate = useNavigate();
 
   // 5. ESTADOS CORRIGIDOS
-  const [categories, setCategories] = useState([]); // Para os modais
-  const [loading, setLoading] = useState(true); // Para o loading do gráfico
+  const [loading, setLoading] = useState(true); // Para o loading do gráfico
   const [loadingExport, setLoadingExport] = useState(false); // Para o botão de exportar
-  
+  const [currentDate, setCurrentDate] = useState(new Date()); 
+  const ano = currentDate.getFullYear();
+  const mes = currentDate.getMonth() + 1;
+  
+ 
   // Estado para os dados do gráfico (vindos da API)
   const [reportData, setReportData] = useState([]); 
   const [totalDespesasMes, setTotalDespesasMes] = useState(0);
+  const [totalReceitasMes, setTotalReceitasMes] = useState(0);
+  const [saldoMes, setSaldoMes] = useState(0);
 
   // Estados de navegação e modais
   const [modalType, setModalType] = useState(null);
@@ -65,13 +71,8 @@ const TelaRelatorio = () => {
   const [showCategoryDetails, setShowCategoryDetails] = useState(false);
   const currentPage = 'relatorio';
 
-  // 6. LÓGICA DE DATA CORRIGIDA
-  // Vamos usar um objeto Date para 'currentDate' para facilitar
-  const [currentDate, setCurrentDate] = useState(new Date()); 
-  // Deriva 'ano' e 'mes' (para a API) e 'currentMonth' (para a UI) do estado 'currentDate'
-  const ano = currentDate.getFullYear();
-  const mes = currentDate.getMonth() + 1; // JS Mês é 0-11, API é 1-12
-  
+  const [categories, setCategories] = useState([]); // Para os modais
+
   const monthNames = useMemo(() => [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
@@ -87,20 +88,17 @@ const TelaRelatorio = () => {
     setLoading(true);
     try {
       // 'ano' e 'mes' agora estão definidos corretamente no escopo do componente
-      const data = await getGastosPorCategoria(ano, mes); // CHAMA A API DE RELATÓRIO
-      
-      setReportData(data); // Salva os dados agregados
-
-      // Calcula o total a partir dos dados agregados
-      const total = data.reduce((sum, item) => sum + item.totalGasto, 0);
-      setTotalDespesasMes(total);
+      const data = await getResumoDoMes(ano, mes); 
+      setReportData(data.gastosPorCategoria);
+      setTotalReceitasMes(data.totalReceitas);
+      setTotalDespesasMes(data.totalDespesas); 
+      setSaldoMes(data.saldoDoMes);
 
     } catch (err) {
       console.error('Falha ao carregar dados do relatório:', err);
     } finally {
       setLoading(false);
     }
-  // Depende de 'ano' e 'mes'
   }, [ano, mes]); 
 
   // useEffect para buscar categorias (só uma vez)
@@ -157,8 +155,7 @@ const TelaRelatorio = () => {
       } else {
         await createCategory(savedCategory);
       }
-      // A função 'fetchData' não existe mais. Devemos chamar 'fetchCategories'
-      await fetchCategories(); // <-- CORRIGIDO
+      await fetchCategories();
       setShowCategoryDetails(false);
     } catch (error) {
       console.error('Erro ao salvar categoria:', error);
@@ -176,12 +173,7 @@ const TelaRelatorio = () => {
       );
       return newDate;
     });
-    // O useEffect que depende de 'fetchReportData' (que depende de 'ano' e 'mes')
-    // será acionado automaticamente e buscará os dados do novo mês.
   };
-
-const totalReceitasGeral = 0; // Ajustar isso requer mais backend
-const saldoAtualGeral = 0 - totalDespesasMes;
 
   // --- FUNÇÃO DE EXPORTAÇÃO ---
   const handleExport = async (format) => {
@@ -224,8 +216,8 @@ const saldoAtualGeral = 0 - totalDespesasMes;
         <h1 className="relatorio-title">Relatórios</h1>
 
         <SummaryCards
-          saldoAtual={saldoAtualGeral} 
-          receitas={totalReceitasGeral} 
+          saldoAtual={saldoMes} 
+          receitas={totalReceitasMes} 
           despesas={totalDespesasMes} 
         />
 
