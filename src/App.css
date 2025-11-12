@@ -863,6 +863,39 @@ label {
         padding-left: 0;
     }
 }
+/* [NOVO] - Controles do Cabeçalho do Relatório (Seletor de Mês e Botões) */
+.relatorio-header-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px; /* Mantém o mesmo espaçamento que o .relatorio-content-flex */
+}
+
+/* [NOVO] - Agrupador dos botões de exportação */
+.export-buttons-group {
+  display: flex;
+  gap: 10px; /* Espaçamento entre os botões */
+}
+
+/* [NOVO] - Estilo dos botões de exportação */
+.btn-exportar {
+  padding: 8px 15px;
+  font-size: 0.9em;
+  font-weight: 500;
+  border-radius: 6px;
+  /* Usando suas variáveis CSS para consistência */
+  border: 1px solid var(--border-color);
+  background-color: var(--card-background);
+  color: var(--text-dark);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-exportar:hover {
+  background-color: var(--background-gray); /* Fica cinza claro no hover */
+  border-color: #adb5bd;
+}
+
 
 /* ====================================================================== */
 /* === 12. SEÇÃO DE FILTROS (TelaTransacoes.js) ========================= */
