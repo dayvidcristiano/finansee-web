@@ -1,8 +1,10 @@
+# Finansee 
+
+FinanSee é o seu parceiro financeiro inteligente. Aperfeiçoe a organização da sua vida controlando receitas e despesas. Acompanhe o progresso em um dashboard interativo, personalize categorias, defina limites de orçamento e gere relatórios detalhados.
+
 <p align="center">
   <img width="250" height="250" alt="Design sem nome" src="https://github.com/user-attachments/assets/32e3c879-6039-485a-9806-c01eb1835c03" />
 </p>
-
-**FinanSee** é mais do que um simples gerenciador de finanças: é o seu parceiro inteligente para organizar a vida financeira! Com ele, você controla entradas e saídas de despesas e receitas, acompanha tudo em um dashboard interativo e envolvente, personaliza categorias, define limites de orçamento e ainda gera relatórios detalhados com exportação de dados em .csv, .xlsx e .pdf.
 
 ---
 
