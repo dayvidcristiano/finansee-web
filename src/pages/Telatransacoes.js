@@ -308,7 +308,7 @@ const Telatransacoes = () => {
             await fetchCategories();
             setCategoryToEdit(null);
             setShowCategoryDetails(false);
-            setNotification({ type: 'success', message: `Categoria "${savedCategory.name}" salva com sucesso!` });
+            setNotification({ type: 'success', message: `Categoria "${savedCategory.nome}" salva com sucesso!` });
         } catch (error) {
             console.error("Erro na API ao salvar categoria:", error);
             setNotification({ type: 'error', message: `Erro ao salvar categoria: ${error.message}` });

@@ -29,29 +29,29 @@ export const getTransactions = async (filters = {}) => {
 export const createTransaction = async (formData) => {
 
  const {tipo, ...payload } = formData;
-
- let endpoint = '';
- if (tipo === 'despesa') {
-  endpoint = '/despesas';
- } else if (tipo === 'receita') {
-  endpoint = '/receitas';
- } else {
-  throw new Error("Tipo de transação inválido: " + tipo);
- }
+ let endpoint = tipo === 'despesa' ? '/despesas' : '/receitas';
 
  try {
   const { data } = await apiClient.post(endpoint, payload);
+  let transacaoReal = data;
+  let alertaOrcamento = null;
+
+  if (data.despesa) {
+    transacaoReal = data.despesa;
+    alertaOrcamento = data.alerta;
+  }
 
   return {
-   ...data, 
+   ...transacaoReal, 
    tipo: tipo,
-   valor: tipo === 'despesa' ? -Math.abs(data.valor) : data.valor
+   valor: tipo === 'despesa' ? -Math.abs(transacaoReal.valor) : transacaoReal.valor,
+   alerta: alertaOrcamento
   };
  
  } catch (error) {
-  console.error("Erro ao criar transação:", error.response?.data || error.message);
-  throw new Error(error.response?.data?.message || "Não foi possível criar a transação.");
- }
+    console.error("Erro ao criar transação:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Não foi possível criar a transação.");
+ }
 };
 
 export const updateTransaction = async (formData) => {
@@ -122,10 +122,10 @@ export const getCategories = async () => {
 export const createCategory = async (categoryData) => {
  try {
   const payload = {
-   nome: categoryData.name, 
-   tipo: categoryData.type.toUpperCase(),
-   cor: categoryData.color, 
-   orcamento: categoryData.type === 'despesa' ? (Number(categoryData.orcamento) || 0) : 0
+   nome: categoryData.nome, 
+   tipo: categoryData.tipo.toUpperCase(),
+   cor: categoryData.cor, 
+   valorLimite: categoryData.tipo === 'despesa' ? (Number(categoryData.orcamento) || 0) : 0
   };
   const { data } = await apiClient.post('/categorias', payload);
   return data;

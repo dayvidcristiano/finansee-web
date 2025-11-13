@@ -91,24 +91,18 @@ const Telacriacaodesp = ({ transactionToEdit, onClose, onSaveSuccess, categories
         valor: parseFloat(formData.valor)
       };
 
-      let novaTransacao;
+      let response;
 
       if (isEditing) {
-        novaTransacao = await updateTransaction(dataToSave);
+        response = await updateTransaction(dataToSave);
       } else {
-        novaTransacao = await createTransaction(dataToSave);
+        response = await createTransaction(dataToSave);
       }
 
-      // ✅ ADICIONADO — checagem real do limite de orçamento
-      if (novaTransacao.tipo === 'despesa' && novaTransacao.categoria && novaTransacao.categoria.id) {
-        try {
-          const budgetData = await checkBudgetLimit(novaTransacao.categoria.id);
-          if (budgetData && budgetData.limite > 0 && budgetData.gastoAtual > budgetData.limite) {
-            alert(`⚠ Atenção: Você excedeu o limite de orçamento da categoria "${budgetData.nomeCategoria}".`);
-          }
-        } catch (err) {
-          console.warn("Erro ao verificar orçamento:", err.message);
-        }
+      if (response.alerta) {
+        // Exibe o alerta vindo do Java
+        alert(response.alerta); 
+        // Ou use sua notificação: setNotification({ type: 'warning', message: response.alerta });
       }
 
       onSaveSuccess();

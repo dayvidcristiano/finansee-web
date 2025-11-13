@@ -57,13 +57,12 @@ const Telacriacaocateg = ({
     const dataToSave = {
       nome: formData.name,
       tipo: formData.type,
-      cor: formData.color
+      cor: formData.color,
+      orcamento: formData.type === 'despesa' ? formData.orcamento : null
     };
 
-    // envia orçamento apenas se o backend já tiver suporte
-    if (formData.type === 'despesa' && formData.orcamento) {
-      // apenas mantém o dado localmente por enquanto
-      console.log("Campo de orçamento (não enviado ao backend):", formData.orcamento);
+    if (isEditing) {
+        dataToSave.id = formData.id;
     }
 
     onSaveSuccess(dataToSave);
