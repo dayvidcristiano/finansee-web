@@ -238,3 +238,16 @@ export const exportarRelatorioPDF = async (ano, mes) => {
     throw new Error("Não foi possível gerar o relatório em PDF.");
   }
 };
+
+// ===========================================
+// --- FUNÇÕES DE DASHBOARD ---
+// ===========================================
+export const getDashboardData = async () => {
+  try {
+    const { data } = await apiClient.get('/dashboard');
+    return data; 
+  } catch (error) {
+    console.error("Erro ao buscar dados do dashboard:", error.response?.data || error.message);
+    throw new Error("Não foi possível carregar os dados do dashboard.");
+  }
+};

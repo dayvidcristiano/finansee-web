@@ -1,105 +1,98 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react'; // 1. Adiciona useCallback
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import { FaArrowUp, FaArrowDown, FaUniversity } from 'react-icons/fa';
 import { Bar } from 'react-chartjs-2';
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Tooltip,
-  Legend,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Legend,
 } from 'chart.js';
-import { getTransactions, getCategories } from '../services/apiService';
+
+import { getDashboardData, getCategories } from '../services/apiService';
 import Telacriacaodesp from './Telacriacaodesp'; 
 import Telacriacaoreceita from './Telacriacaoreceita';
-import Telacategoria from './Telacategoria';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 const Teladashboard = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
-  const [transactions, setTransactions] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [currentPage] = useState('dashboard');
-  const [modalType, setModalType] = useState(null); 
-  const [transactionToEdit, setTransactionToEdit] = useState(null);
+  // 3. ESTADOS SIMPLIFICADOS
+  const [categories, setCategories] = useState([]); // Para os modais
+  const [saldoAtual, setSaldoAtual] = useState(0);
+  const [receitas, setReceitas] = useState(0);
+  const [despesas, setDespesas] = useState(0);
+  const [despesasChartData, setDespesasChartData] = useState({ labels: [], datasets: [] });
+  const [receitasChartData, setReceitasChartData] = useState({ labels: [], datasets: [] });
 
-  const fetchData = async () => {
-    try {
-      const [txs, cats] = await Promise.all([
-        getTransactions(),
-        getCategories()
-      ]);
-      setTransactions(txs);
-      setCategories(cats);
-    } catch (err) {
-      console.error('Erro ao carregar dados:', err);
-    }
+  const [currentPage] = useState('dashboard');
+  const [modalType, setModalType] = useState(null); 
+  const [transactionToEdit, setTransactionToEdit] = useState(null);
+
+  // 4. LÓGICA DE GRÁFICO (HELPER) - Transforma os dados do backend (GastoPorCategoriaDTO) no formato do Chart.js
+  const formatChartData = (label, dataList, valueField) => {
+    const labels = dataList.map(item => item.categoriaNome);
+    const data = dataList.map(item => item[valueField]); // ex: item.totalGasto
+    const backgroundColor = dataList.map(item => item.categoriaCor);
+    
+    // Calcula o total para encontrar a porcentagem
+    const total = data.reduce((sum, val) => sum + val, 0);
+    
+    // Converte valores absolutos em porcentagens
+    const percentageData = data.map(val => (total > 0 ? (val / total) * 100 : 0));
+
+    return {
+      labels,
+      datasets: [{
+        label: label,
+        data: percentageData, // Gráfico mostra porcentagens
+        backgroundColor,
+        borderRadius: 6,
+      }],
+    };
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // 5. fetchData AGORA CHAMA getDashboardData
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      // Busca os dados do dashboard e as categorias em paralelo
+      const [dashboardData, cats] = await Promise.all([
+        getDashboardData(), // <- Nova chamada de API
+        getCategories() // Para os modais
+      ]);
+      
+      // Atualiza os estados dos Cards
+      setSaldoAtual(dashboardData.saldoAtualGeral);
+      setReceitas(dashboardData.totalReceitasGeral);
+      setDespesas(dashboardData.totalDespesasGeral);
 
-  const { receitas, despesas, saldoAtual } = useMemo(() => {
-    const totalReceitas = transactions.filter(t => t.valor > 0).reduce((sum, t) => sum + t.valor, 0);
-    const totalDespesas = transactions.filter(t => t.valor < 0).reduce((sum, t) => sum + Math.abs(t.valor), 0);
-    const saldo = totalReceitas - totalDespesas;
-    return { receitas: totalReceitas, despesas: totalDespesas, saldoAtual: saldo };
-  }, [transactions]);
+      // Atualiza os estados dos Gráficos
+      setDespesasChartData(
+        formatChartData('Despesas (%)', dashboardData.gastosPorCategoria, 'totalGasto')
+      );
+      setReceitasChartData(
+        formatChartData('Receitas (%)', dashboardData.receitasPorCategoria, 'totalRecebido')
+      );
 
-  const despesasPorCategoria = useMemo(() => {
-    const despesas = transactions.filter(t => t.valor < 0);
-    const total = despesas.reduce((sum, t) => sum + Math.abs(t.valor), 0);
-    const agrupadas = despesas.reduce((acc, t) => {
-      const nome = typeof t.categoria === 'string' ? t.categoria : t.categoria?.nome || 'Outros';
-      acc[nome] = (acc[nome] || 0) + Math.abs(t.valor);
-      return acc;
-    }, {});
-    const labels = Object.keys(agrupadas);
-    const data = labels.map(label => agrupadas[label] / total * 100);
-    const backgroundColor = labels.map(label => {
-      const cat = categories.find(c => c.nome === label);
-      return cat?.cor || '#888';
-    });
-    return {
-      labels,
-      datasets: [{
-        label: 'Despesas (%)',
-        data,
-        backgroundColor,
-        borderRadius: 6,
-      }],
-    };
-  }, [transactions, categories]);
+      // Atualiza categorias (para os modais)
+      setCategories(cats);
+    } catch (err) {
+      console.error('Erro ao carregar dados:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []); // Roda apenas uma vez
 
-  const receitasPorCategoria = useMemo(() => {
-    const receitas = transactions.filter(t => t.valor > 0);
-    const total = receitas.reduce((sum, t) => sum + t.valor, 0);
-    const agrupadas = receitas.reduce((acc, t) => {
-      const nome = typeof t.categoria === 'string' ? t.categoria : t.categoria?.nome || 'Outros';
-      acc[nome] = (acc[nome] || 0) + t.valor;
-      return acc;
-    }, {});
-    const labels = Object.keys(agrupadas);
-    const data = labels.map(label => agrupadas[label] / total * 100);
-    const backgroundColor = labels.map(label => {
-      const cat = categories.find(c => c.nome === label);
-      return cat?.cor || '#888';
-    });
-    return {
-      labels,
-      datasets: [{
-        label: 'Receitas (%)',
-        data,
-        backgroundColor,
-        borderRadius: 6,
-      }],
-    };
-  }, [transactions, categories]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
 
   const chartOptions = {
     responsive: true,
@@ -134,6 +127,17 @@ const Teladashboard = () => {
     setTransactionToEdit(null);
   };
 
+  const { despesaCategories, receitaCategories } = useMemo(() => {
+    if (!categories) return { despesaCategories: [], receitaCategories: [] };
+    const despesasCat = categories.filter(c => c.tipo.toUpperCase() === 'DESPESA');
+    const receitasCat = categories.filter(c => c.tipo.toUpperCase() === 'RECEITA');
+    return { despesaCategories: despesasCat, receitaCategories: receitasCat };
+  }, [categories]);
+
+  if (loading) {
+     return <div className="loading-spinner">Carregando dashboard...</div>;
+  }
+
   return (
     <div className="page-layout">
       <Sidebar
@@ -145,33 +149,36 @@ const Teladashboard = () => {
       <div className="main-content-area">
         <h1>Dashboard</h1>
 
-        <div className="summary-cards-container">
-          <div className="summary-card">
-            <div className="card-header"><h3>Saldo atual</h3><FaUniversity className="income-icon" /></div>
-            <p className="card-value">R$ {saldoAtual.toFixed(2)}</p>
-          </div>
+        {/* 8. SummaryCards agora usam os estados simples */}
+        <div className="summary-cards-container">
+          <div className="summary-card">
+            <div className="card-header"><h3>Saldo atual</h3><FaUniversity className="income-icon" /></div>
+            {/* Usa o estado 'saldoAtual' */}
+            <p className="card-value">R$ {saldoAtual.toFixed(2)}</p>
+          </div>
+          <div className="summary-card" style={{ backgroundColor: '#f0f0f0', cursor: 'pointer' }} onClick={() => handleNewTransaction('receita')}>
+            <div className="card-header"><h3>Receitas</h3><FaArrowUp className="income-icon" /></div>
+            {/* Usa o estado 'receitas' */}
+            <p className="card-value">R$ {receitas.toFixed(2)}</p>
+          </div>
+          <div className="summary-card" style={{ backgroundColor: '#f0f0f0', cursor: 'pointer' }} onClick={() => handleNewTransaction('despesa')}>
+            <div className="card-header"><h3>Despesas</h3><FaArrowDown className="expense-icon" /></div>
+            {/* Usa o estado 'despesas' */}
+            <p className="card-value">R$ {despesas.toFixed(2)}</p>
+          </div>
+        </div>
 
-          <div className="summary-card" style={{ backgroundColor: '#f0f0f0', cursor: 'pointer' }} onClick={() => handleNewTransaction('receita')}>
-            <div className="card-header"><h3>Receitas</h3><FaArrowUp className="income-icon" /></div>
-            <p className="card-value">R$ {receitas.toFixed(2)}</p>
-          </div>
-
-          <div className="summary-card" style={{ backgroundColor: '#f0f0f0', cursor: 'pointer' }} onClick={() => handleNewTransaction('despesa')}>
-            <div className="card-header"><h3>Despesas</h3><FaArrowDown className="expense-icon" /></div>
-            <p className="card-value">R$ {despesas.toFixed(2)}</p>
-          </div>
-        </div>
-
-        <div className="charts-row">
-          <div className="chart-card">
-            <h3>Despesas por categoria</h3>
-            <Bar data={despesasPorCategoria} options={chartOptions} />
-          </div>
-          <div className="chart-card">
-            <h3>Receitas por categoria</h3>
-            <Bar data={receitasPorCategoria} options={chartOptions} />
-          </div>
-        </div>
+        {/* 9. Gráficos agora usam os estados 'despesasChartData' e 'receitasChartData' */}
+        <div className="charts-row">
+          <div className="chart-card">
+            <h3>Despesas por categoria (%)</h3>
+            <Bar data={despesasChartData} options={chartOptions} />
+          </div>
+          <div className="chart-card">
+            <h3>Receitas por categoria (%)</h3>
+            <Bar data={receitasChartData} options={chartOptions} />
+          </div>
+        </div>
 
         <div className="dashboard-vermais-container">
           <button
@@ -182,34 +189,26 @@ const Teladashboard = () => {
           </button>
         </div>
 
-        {modalType === 'despesa' && (
-          <Telacriacaodesp
-            transactionToEdit={transactionToEdit}
-            onClose={handleCloseModal}
-            onSaveSuccess={async () => { await fetchData(); }} 
-            categories={categories}
-          />
-        )}
-        {modalType === 'receita' && (
-          <Telacriacaoreceita
-            transactionToEdit={transactionToEdit}
-            onClose={handleCloseModal}
-            onSaveSuccess={async () => { await fetchData(); }}
-            categories={categories}
-          />
-        )}
-        {modalType === 'categoria' && (
-          <Telacategoria
-            onClose={handleCloseModal}
-            onEditCategory={() => {}}
-            onCreateNewCategory={() => {}}
-            categories={categories}
-            onDeleteCategory={() => {}}
-          />
-        )}
-      </div>
-    </div>
-  );
+{/* 10. Modais agora usam as listas de categorias filtradas */}
+        {modalType === 'despesa' && (
+          <Telacriacaodesp
+            transactionToEdit={transactionToEdit}
+            onClose={handleCloseModal}
+            onSaveSuccess={fetchData} // Chama fetchData para atualizar o dashboard
+            categories={despesaCategories} // Passa a lista filtrada
+          />
+        )}
+        {modalType === 'receita' && (
+          <Telacriacaoreceita
+            transactionToEdit={transactionToEdit}
+            onClose={handleCloseModal}
+            onSaveSuccess={fetchData} // Chama fetchData para atualizar o dashboard
+            categories={receitaCategories} // Passa a lista filtrada
+          />
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Teladashboard;
