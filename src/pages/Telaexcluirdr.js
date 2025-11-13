@@ -1,8 +1,10 @@
 // src/pages/Telaexcluirdr.js
 import React from 'react';
+// 1. Importe o CSS aqui
+import './Telaexcluirdr.css'; 
 
-// Nome da função atualizado para Telaexcluirdr
 function Telaexcluirdr({ onConfirm, onCancel }) {
+  // ... (o JSX permanece o mesmo, pois as classes já foram adicionadas)
   return (
     <div className="modal-overlay">
       <div className="confirm-modal-content">
@@ -20,4 +22,4 @@ function Telaexcluirdr({ onConfirm, onCancel }) {
   );
 }
 
-export default Telaexcluirdr; 
+export default Telaexcluirdr;
