@@ -31,6 +31,19 @@ Instruções claras e sequenciais para rodar o projeto localmente:
 | **4.** | `npm start` | **Iniciar** o servidor de desenvolvimento. |
 | **5.** | **Acesso** | O projeto estará disponível em: **`http://localhost:3000/`** |
 
+### Executando o Projeto Back-end
+
+Instruções claras e sequenciais para rodar o projeto localmente:
+
+| Ordem | Comando / Ação | Descrição |
+| :---: | :--- | :--- |
+| **1.** | `git clone https://github.com/Leticia-Gabs/finansee.git` | **Clonar** o repositório do back-end. |
+| **2.** | **Abrir no IntelliJ IDEA** | **Importar** o projeto clonado. Ao abrir, o IntelliJ **baixará automaticamente as dependências** e **configurará o ambiente**. |
+| **3.** | **Configurar variáveis de ambiente** | **Definir** as credenciais do banco de dados (usuário, senha, URL etc.) nas variáveis globais do IntelliJ. |
+| **4.** | **Executar `FinanseeApplication`** | **Rodar** o projeto diretamente pelo IntelliJ, iniciando o servidor da aplicação. |
+| **5.** | **Acesso** | O back-end estará disponível em: **`http://localhost:8080/`** |
+
+
 ### Sessão Entrega 1
 
 Aqui você pode encontrar a documentação e os protótipos da nossa primeira entrega.
