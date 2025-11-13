@@ -179,7 +179,7 @@ const Telacriacaodesp = ({ transactionToEdit, onClose, onSaveSuccess, categories
      />
      
      <label>Categoria</label>
-nbsp;     <select
+     <select
       name="categoriaId"
       value={formData.categoriaId}
       onChange={handleChange}

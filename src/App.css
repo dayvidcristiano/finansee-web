@@ -334,7 +334,7 @@ body, #root {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
     width: 450px;
     max-width: 90%;
-    position: relative;
+    position: relative; /* <-- Mantenha se precisar de posicionamento interno, mas o flex do pai deve centralizar */
 }
 
 .modal-header {
@@ -1005,4 +1005,11 @@ label {
 .relatorio-toggle-buttons button.ativo {
   background-color: #1E3A8A;
   color: white;
+}
+/* App.css - Adicione no final */
+.form-card {
+    /* Garante que o cartão do modal não fique muito grande em telas menores */
+    max-height: 90vh; 
+    overflow-y: auto; /* Adiciona scroll se o conteúdo for muito alto */
+    margin: auto; /* Esta propriedade ajuda o flexbox a centralizar melhor em alguns navegadores, embora seja redundante */
 }
