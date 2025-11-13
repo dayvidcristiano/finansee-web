@@ -116,13 +116,22 @@ Aqui você encontrará a documentação da **última entrega** do projeto, inclu
 
 - **Histórias de Usuário Selecionadas [Quadro Trello]**
 <p align="left">
-  <img src="https://support.atlassian.com/trello/docs/printing-in-trello/" width="32%" alt="Resultado HU X">
-  <img src="https://support.atlassian.com/trello/docs/printing-in-trello/" width="32%" alt="Resultado HU Y">
-  <img src="https://support.atlassian.com/trello/docs/printing-in-trello/" width="32%" alt="Resultado HU Z">
+  <img width="445" height="97" alt="image" src="https://github.com/user-attachments/assets/02ca4345-413a-4734-a5ff-1f8d564f2434" />
+  <img width="449" height="93" alt="image" src="https://github.com/user-attachments/assets/9370f129-c177-41b6-b3d5-041195bde631" />
+  <img width="445" height="97" alt="image" src="https://github.com/user-attachments/assets/718170cb-d9cf-47c0-8ec5-750c56734520" />
 </p>
 
   - **Screencast do Sistema (Front-End com novas HUs)** <br>
   [Link para o YouTube (Screencast Front-End v4)]
+
+    **HU04: Controle de Orçamento** <br>
+    Permite que o usuário defina um limite de orçamento mensal para categorias de despesas. O sistema notifica o usuário quando o gasto acumulado se aproxima (ex: 80%) ou excede esse        limite, garantindo a gestão proativa dos gastos.
+  
+    **HU06: Exportação de Dados** <br>
+    Permite que o usuário exporte dados de despesas e receitas, selecionando um período e um formato de arquivo (CSV, XLSX ou PDF). O arquivo gerado deve conter todos os detalhes das        transações do período selecionado.
+  
+    **HU07: Relatórios e Gráficos** 
+    Fornece ao usuário uma visão geral dos gastos mensais por categoria através de relatórios e gráficos de barras. O sistema exibe o total gasto no mês e a      representatividade          percentual de cada categoria.
 
   - **Screencast do Sistema (Back-End com persistência)** <br>
   [Link para o YouTube (Screencast Back-End v4)]
