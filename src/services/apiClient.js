@@ -4,7 +4,7 @@ const localhost = 'http://localhost:8080/api'
 const railway   = 'https://finansee-production.up.railway.app/api'
 
 const apiClient = axios.create({
-  baseURL: localhost, 
+  baseURL: railway, 
   headers: {
     'Content-Type': 'application/json',
   },
