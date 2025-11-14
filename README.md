@@ -134,35 +134,28 @@ Aqui você encontrará a documentação da **última entrega** do projeto, inclu
   <img width="445" height="97" alt="image" src="https://github.com/user-attachments/assets/718170cb-d9cf-47c0-8ec5-750c56734520" />
 </p>
 
-  - **Screencast do Sistema (Front-End com novas HUs)** <br>
-  [Link para o YouTube (Screencast Front-End v4)]
+- **Screencast do Sistema (Front-End, Back-End e Testes Automatizados – HU04, HU06 e HU07)** <br>
+  https://youtu.be/BC3jfwvsD5Q?si=DLrwFF3JFG7FEGDP
 
-    **HU04: Controle de Orçamento** <br>
-    Permite que o usuário defina um limite de orçamento mensal para categorias de despesas. O sistema notifica o usuário quando o gasto acumulado se aproxima (ex: 80%) ou excede esse        limite, garantindo a gestão proativa dos gastos.
-  
-    **HU06: Exportação de Dados** <br>
-    Permite que o usuário exporte dados de despesas e receitas, selecionando um período e um formato de arquivo (CSV, XLSX ou PDF). O arquivo gerado deve conter todos os detalhes das        transações do período selecionado.
-  
-    **HU07: Relatórios e Gráficos** 
-    Fornece ao usuário uma visão geral dos gastos mensais por categoria através de relatórios e gráficos de barras. O sistema exibe o total gasto no mês e a      representatividade          percentual de cada categoria.
+  **HU04: Controle de Orçamento** <br>
+  Permite definir um limite mensal por categoria e notifica quando o gasto atinge cerca de 80% ou ultrapassa o limite.
 
-  - **Screencast do Sistema (Back-End com persistência)** <br>
-  [Link para o YouTube (Screencast Back-End v4)]
+  **HU06: Exportação de Dados** <br>
+  Permite exportar despesas e receitas por período, nos formatos CSV, XLSX ou PDF, contendo todos os detalhes das transações.
 
-  - **Persistência de Dados (Refatoração)** <br>
-  O projeto foi refatorado para utilizar **persistência permanente** de dados através de [Mencione o método: Banco de Dados, Arquivo, Serialização, etc.].
+  **HU07: Relatórios e Gráficos** <br>
+  Exibe visão geral dos gastos mensais por categoria, com gráficos de barras, totais mensais e percentuais por categoria.
+---
 
-  - **Testes Automatizados** <br>
-  Implementação de testes automatizados (unitários e/ou de integração).
+## Testes Automatizados
+**Comando para rodar os testes:**  <br>
+`npm test` / `pytest` / `mvn test`  
 
-  - Comando para rodar os testes: `npm test` / `pytest` / `mvn test` (ajustar conforme stack).  <br>
-  - Critério de aceite: todos os testes das histórias selecionadas devem passar no CI.
+**Critério de aceite:**  <br>
+Todos os testes das histórias selecionadas devem passar no CI.
 
-  - **Screencast dos Testes** <br>
-  [Link para o YouTube (Screencast da Execução dos Testes)]
-
-  - **Uso do Issue/Bug Tracker (no GitHub)** <br>
-  O gerenciamento de *issues* e *bugs* foi realizado integralmente no GitHub.
+- **Uso do Issue/Bug Tracker (no GitHub)** <br>
+O gerenciamento de *issues* e *bugs* foi realizado integralmente no GitHub.
 
   <img width="928" height="178" alt="image" src="https://github.com/user-attachments/assets/13f7b75b-b317-4d4d-9861-8056271ed723" />
   <img width="939" height="191" alt="image" src="https://github.com/user-attachments/assets/02115aa1-4b74-4cf7-a1df-fc7c5f9e522b" />
