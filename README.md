@@ -147,9 +147,9 @@ Aqui você encontrará a documentação da **última entrega** do projeto, inclu
   Exibe visão geral dos gastos mensais por categoria, com gráficos de barras, totais mensais e percentuais por categoria.
 ---
 
-## Testes Automatizados
-**Comando para rodar os testes:**  <br>
-`npm test` / `pytest` / `mvn test`  
+- **Testes Automatizados**
+  **Comando para rodar os testes:**  <br>
+  `npm test` / `pytest` / `mvn test`  
 
 **Critério de aceite:**  <br>
 Todos os testes das histórias selecionadas devem passar no CI.
