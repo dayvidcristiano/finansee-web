@@ -151,8 +151,8 @@ Aqui você encontrará a documentação da **última entrega** do projeto, inclu
   **Comando para rodar os testes:**  <br>
   `npm test` / `pytest` / `mvn test`  
 
-**Critério de aceite:**  <br>
-Todos os testes das histórias selecionadas devem passar no CI.
+  **Critério de aceite:**  <br>
+  Todos os testes das histórias selecionadas devem passar no CI.
 
 - **Uso do Issue/Bug Tracker (no GitHub)** <br>
 O gerenciamento de *issues* e *bugs* foi realizado integralmente no GitHub.
